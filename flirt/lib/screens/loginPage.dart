@@ -84,15 +84,36 @@ class _LoginState extends State<Login> {
       final result = await AuthService().login(email, password);
       print(result);
       if (result['success']) {
-        print('hello');
         final token = result['token'];
         SharedPreferences pref = await SharedPreferences.getInstance();
         await pref.setString('token', token);
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Home()));
+      } else {
+        await _showMyDialog(result['msg']);
       }
     } catch (err) {
       throw err;
     }
+  }
+
+  Future<void> _showMyDialog(result) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(result),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
