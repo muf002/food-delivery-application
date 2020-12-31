@@ -10,11 +10,14 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   @override
-  final _emailController = TextEditingController();
+  final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+        body: SingleChildScrollView(
+            child: Padding(
+      padding: EdgeInsets.only(top: 100),
+      child: Center(
         child: Container(
             padding: EdgeInsets.all(20),
             child: Column(
@@ -40,8 +43,9 @@ class _LoginState extends State<Login> {
                           Padding(
                             padding: const EdgeInsets.all(10),
                             child: TextField(
-                              decoration: InputDecoration(labelText: 'Email'),
-                              controller: _emailController,
+                              decoration:
+                                  InputDecoration(labelText: 'username'),
+                              controller: usernameController,
                             ),
                           ),
                           SizedBox(height: 20),
@@ -68,7 +72,7 @@ class _LoginState extends State<Login> {
                       child: Text('Login', style: TextStyle(fontSize: 25)),
                       onPressed: () {
                         loggingIn(
-                            _emailController.text, passwordController.text);
+                            usernameController.text, passwordController.text);
                       },
                     )),
                 SizedBox(height: 20),
@@ -76,17 +80,17 @@ class _LoginState extends State<Login> {
               ],
             )),
       ),
-    );
+    )));
   }
 
-  loggingIn(email, password) async {
+  loggingIn(username, password) async {
     try {
-      final result = await AuthService().login(email, password);
+      final result = await AuthService().restLogin(username, password);
       print(result);
       if (result['success']) {
         final token = result['token'];
-        SharedPreferences pref = await SharedPreferences.getInstance();
-        await pref.setString('token', token);
+        SharedPreferences restPref = await SharedPreferences.getInstance();
+        await restPref.setString('token', token);
         Navigator.push(context,
             MaterialPageRoute(builder: (BuildContext context) => Home()));
       } else {

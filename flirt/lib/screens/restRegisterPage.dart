@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../services/registerion.dart';
-import './custloginPage.dart';
+import './restloginPage.dart';
 
-class CustRegister extends StatefulWidget {
+class RestRegister extends StatefulWidget {
   @override
-  _CustRegisterState createState() => _CustRegisterState();
+  _RestRegisterState createState() => _RestRegisterState();
 }
 
-class _CustRegisterState extends State<CustRegister> {
-  final _emailController = TextEditingController();
+class _RestRegisterState extends State<RestRegister> {
+  final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
 
@@ -19,7 +19,7 @@ class _CustRegisterState extends State<CustRegister> {
     return Scaffold(
         body: SingleChildScrollView(
             child: Padding(
-      padding: EdgeInsets.only(top: 35),
+      padding: EdgeInsets.only(top: 60),
       child: Center(
         child: Container(
           padding: EdgeInsets.all(20),
@@ -54,8 +54,8 @@ class _CustRegisterState extends State<CustRegister> {
                         Padding(
                           padding: const EdgeInsets.all(10),
                           child: TextField(
-                            decoration: InputDecoration(labelText: 'Email'),
-                            controller: _emailController,
+                            decoration: InputDecoration(labelText: 'Username'),
+                            controller: usernameController,
                           ),
                         ),
                         SizedBox(height: 20),
@@ -80,12 +80,19 @@ class _CustRegisterState extends State<CustRegister> {
                     color: Colors.lightBlueAccent,
                     child: Text('Register', style: TextStyle(fontSize: 25)),
                     onPressed: () {
-                      register(nameController.text, _emailController.text,
+                      register(nameController.text, usernameController.text,
                           passwordController.text);
                     },
                   )),
               SizedBox(height: 20),
-              FlatButton(onPressed: null, child: Text('Sign In')),
+              FlatButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => Login()));
+                  },
+                  child: Text('Sign In')),
             ],
           ),
         ),
@@ -93,9 +100,10 @@ class _CustRegisterState extends State<CustRegister> {
     )));
   }
 
-  register(name, email, password) async {
+  register(name, username, password) async {
     try {
-      final result = await Register().customerRegister(name, email, password);
+      final result =
+          await Register().restaurantRegister(name, username, password);
       print(result);
       if (result['success']) {
         Navigator.push(context,
@@ -111,7 +119,7 @@ class _CustRegisterState extends State<CustRegister> {
   Future<void> _showMyDialog(result) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(result),
