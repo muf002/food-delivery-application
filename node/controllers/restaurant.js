@@ -5,6 +5,11 @@ const bcrypt = require('bcrypt');
 const Restaurant = require('../models/restaurant');
 const router = express.Router();
 
+router.get('/restaurants', async(req,res)=>{
+    let rest = await Restaurant.find({isOpen:true}).select({name:1});
+    res.send(rest);
+})
+
 router.post('/restRegister', async (req, res)=>{
     let rest = await Restaurant.findOne({ username: req.body.username });
     if(rest){

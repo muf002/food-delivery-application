@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../services/registerion.dart';
-import './restloginPage.dart';
+import './restLoginPage.dart';
 
 class RestRegister extends StatefulWidget {
   @override
@@ -90,7 +90,7 @@ class _RestRegisterState extends State<RestRegister> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => Login()));
+                            builder: (BuildContext context) => RestLogin()));
                   },
                   child: Text('Sign In')),
             ],
@@ -107,7 +107,7 @@ class _RestRegisterState extends State<RestRegister> {
       print(result);
       if (result['success']) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Login()));
+            MaterialPageRoute(builder: (BuildContext context) => RestLogin()));
       } else {
         await _showMyDialog(result['msg']);
       }

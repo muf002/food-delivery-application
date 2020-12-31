@@ -99,7 +99,7 @@ class _CustRegisterState extends State<CustRegister> {
       print(result);
       if (result['success']) {
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Login()));
+            MaterialPageRoute(builder: (BuildContext context) => CustLogin()));
       } else {
         await _showMyDialog(result['msg']);
       }

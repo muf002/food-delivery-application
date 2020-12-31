@@ -3,12 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/authService.dart';
 import './home.dart';
 
-class Login extends StatefulWidget {
+class CustLogin extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _CustLoginState createState() => _CustLoginState();
 }
 
-class _LoginState extends State<Login> {
+class _CustLoginState extends State<CustLogin> {
   @override
   final _emailController = TextEditingController();
   final passwordController = TextEditingController();
