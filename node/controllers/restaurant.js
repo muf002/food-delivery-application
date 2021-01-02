@@ -6,7 +6,7 @@ const Restaurant = require('../models/restaurant');
 const router = express.Router();
 
 router.get('/restaurants', async(req,res)=>{
-    let rest = await Restaurant.find({isOpen:true}).select({name:1});
+    let rest = await Restaurant.find({isOpen:true}).select('-_id name');
     res.send(rest);
 })
 

@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const users = require('./controllers/user');
 const restaurants = require('./controllers/restaurant');
+const menu = require('./controllers/menu');
 const app = express();
 const port = 3000;
 
@@ -15,6 +16,7 @@ mongoose.connect('mongodb://localhost/first', {useNewUrlParser: true, useUnified
 app.use(express.json());
 app.use('/', users);
 app.use('/', restaurants);
+app.use('/', menu);
 
 // const courseSchema = new mongoose.Schema({
 //     name: String,
