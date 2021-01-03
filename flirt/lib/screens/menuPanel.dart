@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import '../services/getService.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import './cartPage.dart';
 
 class MenuPage extends StatefulWidget {
   var restaurant;
-  MenuPage(rest) {
+  var token;
+  MenuPage(rest, user) {
     restaurant = rest;
+    token = user;
   }
   @override
   _MenuPageState createState() => _MenuPageState();
@@ -13,6 +18,8 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
   bool isSearch = false;
   String rest;
+  int _quan = 0;
+  List<dynamic> cart = List<dynamic>();
 
   getMenu() async {
     final menu = await GetService().getMenu(widget.restaurant);
@@ -38,11 +45,13 @@ class _MenuPageState extends State<MenuPage> {
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
-                onTap: () {},
-                child: Icon(
-                  Icons.shopping_cart,
-                  size: 26.0,
-                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => Cart(cart)));
+                },
+                child: Icon(Icons.shopping_cart),
               )),
           Padding(
               padding: EdgeInsets.only(right: 20.0),
@@ -63,7 +72,7 @@ class _MenuPageState extends State<MenuPage> {
               return ListView(
                 children: <Widget>[
                   for (var item in snapshot.data)
-                    MenuItems(item['name'], item['price'])
+                    menuItems(item['name'], item['price'])
                 ],
               );
             } else {
@@ -76,19 +85,63 @@ class _MenuPageState extends State<MenuPage> {
       ),
     );
   }
-}
 
-class MenuItems extends StatelessWidget {
-  String item;
-  var val;
-  MenuItems(String x, var y) {
-    item = x;
-    val = y;
+  Future<void> _showMyDialog(item, val) async {
+    // setState(() {
+    //   _quan = 0;
+    // });
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              actionsPadding: EdgeInsets.only(bottom: 20),
+              title: Text('Qantity'),
+              actions: <Widget>[
+                new FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      ++_quan;
+                    });
+                  },
+                  child: new Icon(
+                    Icons.add,
+                    color: Colors.black,
+                  ),
+                  backgroundColor: Colors.white,
+                ),
+                new Text('$_quan', style: new TextStyle(fontSize: 20.0)),
+                new FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_quan != 0) _quan--;
+                    });
+                  },
+                  child: new Icon(Icons.remove, color: Colors.black),
+                  backgroundColor: Colors.white,
+                ),
+                new TextButton(
+                  child: Text('Confirm'),
+                  onPressed: () {
+                    cartPush(item, val, _quan);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
-  @override
-  Widget build(BuildContext context) {
+
+  menuItems(String item, var val) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () async {
+        await _showMyDialog(item, val);
+      },
       child: Card(
         elevation: 2.0,
         child: Padding(
@@ -100,5 +153,23 @@ class MenuItems extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  cartPush(item, price, quantity) {
+    final product = {'item': item, 'price': price, 'quantity': quantity};
+    setState(() {
+      cart.add(product);
+    });
+    Fluttertoast.showToast(
+        msg: '$item added to cart',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.grey[800],
+        textColor: Colors.white);
+    setState(() {
+      _quan = 0;
+    });
+    print(cart);
   }
 }

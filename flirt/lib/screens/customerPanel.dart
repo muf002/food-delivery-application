@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import '../services/getService.dart';
 import './restLoginPage.dart';
 import './menuPanel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerPanel extends StatefulWidget {
   List<dynamic> restaurants;
-  CustomerPanel() {}
+  SharedPreferences user;
+  CustomerPanel(user) {
+    this.user = user;
+  }
   @override
   _CustomerPanelState createState() => _CustomerPanelState();
 }
@@ -80,7 +84,8 @@ class _CustomerPanelState extends State<CustomerPanel> {
             if (snapshot.hasData) {
               return ListView(
                 children: <Widget>[
-                  for (var item in snapshot.data) MyRestaurants(item['name'])
+                  for (var item in snapshot.data)
+                    MyRestaurants(item['name'], widget.user)
                 ],
               );
             } else {
@@ -97,8 +102,10 @@ class _CustomerPanelState extends State<CustomerPanel> {
 
 class MyRestaurants extends StatelessWidget {
   String restaurant;
-  MyRestaurants(String x) {
+  SharedPreferences token;
+  MyRestaurants(String x, SharedPreferences user) {
     restaurant = x;
+    token = user;
   }
   @override
   Widget build(BuildContext context) {
@@ -107,7 +114,8 @@ class MyRestaurants extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => MenuPage(this.restaurant)));
+                builder: (BuildContext context) =>
+                    MenuPage(this.restaurant, this.token)));
       },
       child: Card(
         elevation: 10.0,

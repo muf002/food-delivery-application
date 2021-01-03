@@ -21,3 +21,18 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// GestureDetector(
+//                   onTap: () {},
+//                   child: new Stack(children: <Widget>[
+//                     new Padding(
+//                         padding: EdgeInsets.only(top: 15),
+//                         child: Icon(Icons.shopping_cart)),
+//                     new Positioned(
+//                       // draw a red marble
+//                       top: 12.0,
+//                       right: 0.0,
+//                       child: new Icon(Icons.brightness_1,
+//                           size: 8.0, color: Colors.redAccent),
+//                     ),
+//                   ]))

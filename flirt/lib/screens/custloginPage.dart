@@ -107,7 +107,7 @@ class _CustLoginState extends State<CustLogin> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => CustomerPanel()));
+                builder: (BuildContext context) => CustomerPanel(custPref)));
       } else {
         await _showMyDialog(result['msg']);
       }
