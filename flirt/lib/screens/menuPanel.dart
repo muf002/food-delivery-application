@@ -30,6 +30,7 @@ class _MenuPageState extends State<MenuPage> {
   void initState() {
     super.initState();
     this.rest = widget.restaurant;
+    cart = [];
   }
 
   @override
@@ -87,9 +88,6 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Future<void> _showMyDialog(item, val) async {
-    // setState(() {
-    //   _quan = 0;
-    // });
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -156,20 +154,37 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   cartPush(item, price, quantity) {
-    final product = {'item': item, 'price': price, 'quantity': quantity};
-    setState(() {
-      cart.add(product);
-    });
-    Fluttertoast.showToast(
-        msg: '$item added to cart',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIos: 1,
-        backgroundColor: Colors.grey[800],
-        textColor: Colors.white);
-    setState(() {
-      _quan = 0;
-    });
+    var choice = true;
+    for (var food in this.cart) {
+      if (food['item'] == item) {
+        print('Usmanpapa');
+        food['quantity'] = food['quantity'] + quantity;
+        choice = false;
+        setState(() {
+          _quan = 0;
+        });
+        break;
+      }
+      choice = true;
+    }
+    if (choice) {
+      if (quantity > 0) {
+        final product = {'item': item, 'price': price, 'quantity': quantity};
+        setState(() {
+          cart.add(product);
+        });
+        Fluttertoast.showToast(
+            msg: '$item added to cart',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Colors.grey[800],
+            textColor: Colors.white);
+        setState(() {
+          _quan = 0;
+        });
+      }
+    }
     print(cart);
   }
 }
