@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
+import '../services/registerion.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Order extends StatefulWidget {
   int price;
-  Order(cost) {
+  var user;
+  var restaurant;
+  var pro;
+  Order(cost, user, rest, product) {
     price = cost;
+    this.user = user;
+    this.restaurant = rest;
+    this.pro = product;
   }
   @override
-  _OrderState createState() => _OrderState(this.price);
+  _OrderState createState() =>
+      _OrderState(this.price, this.user, this.restaurant, this.pro);
 }
 
 class _OrderState extends State<Order> {
+  final addressController = TextEditingController();
   int cost;
   int cost_del;
-  _OrderState(cost);
+  _OrderState(cost, user, rest, product);
   @override
   void initState() {
     // TODO: implement initState
@@ -59,6 +69,7 @@ class _OrderState extends State<Order> {
                   height: 13,
                 ),
                 new TextFormField(
+                  controller: addressController,
                   decoration: new InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(vertical: 40.0),
                     fillColor: Colors.white,
@@ -144,7 +155,9 @@ class _OrderState extends State<Order> {
                       height: 55,
                       width: MediaQuery.of(context).size.width,
                       child: RaisedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await placeOrder();
+                        },
                         child: const Text(
                           'Confirm Your Order',
                           style: TextStyle(fontSize: 20),
@@ -159,6 +172,43 @@ class _OrderState extends State<Order> {
           ),
         ),
       ),
+    );
+  }
+
+  placeOrder() async {
+    var response = await Register().orderRegister(widget.pro, widget.user,
+        widget.restaurant, this.cost_del, addressController.text);
+    print(response);
+    if (response['success']) {
+      Fluttertoast.showToast(
+          msg: 'Your order has been placed',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.grey[800],
+          textColor: Colors.white);
+    } else {
+      _showMyDialog(response['msg']);
+    }
+  }
+
+  Future<void> _showMyDialog(result) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(result),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

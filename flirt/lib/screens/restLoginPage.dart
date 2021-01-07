@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/authService.dart';
+import './restHomePage.dart';
+import './restRegisterPage.dart';
 import './home.dart';
 
 class RestLogin extends StatefulWidget {
@@ -27,7 +29,7 @@ class _RestLoginState extends State<RestLogin> {
         ),
         body: SingleChildScrollView(
             child: Padding(
-          padding: EdgeInsets.only(top: 100),
+          padding: EdgeInsets.only(top: 70),
           child: Center(
             child: Container(
                 padding: EdgeInsets.all(20),
@@ -87,7 +89,18 @@ class _RestLoginState extends State<RestLogin> {
                           },
                         )),
                     SizedBox(height: 20),
-                    FlatButton(onPressed: null, child: Text('Forget Password')),
+                    FlatButton(
+                        onPressed: () {}, child: Text('Forget Password')),
+                    SizedBox(height: 5),
+                    FlatButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      RestRegister()));
+                        },
+                        child: Text('Register')),
                   ],
                 )),
           ),
@@ -102,8 +115,10 @@ class _RestLoginState extends State<RestLogin> {
         final token = result['token'];
         SharedPreferences restPref = await SharedPreferences.getInstance();
         await restPref.setString('token', token);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => Home()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => RestaurantHome(restPref)));
       } else {
         await _showMyDialog(result['msg']);
       }

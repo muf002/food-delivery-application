@@ -1,26 +1,40 @@
+import 'package:flirt/services/getService.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './placeOrder.dart';
+import '../services/authService.dart';
 
 class Cart extends StatefulWidget {
   List<dynamic> _cart = List<dynamic>();
-
-  Cart(cart) {
+  SharedPreferences user;
+  var restaurant;
+  Cart(cart, token, rest) {
     _cart = cart;
+    user = token;
+    restaurant = rest;
   }
 
   @override
-  _CartState createState() => _CartState(this._cart);
+  _CartState createState() =>
+      _CartState(this._cart, this.user, this.restaurant);
 }
 
 class _CartState extends State<Cart> {
   int total_price;
-  _CartState(cart);
+  SharedPreferences token;
+  var customer;
+  List<dynamic> products = List<dynamic>();
+  _CartState(cart, user, rest);
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     total();
+    setState(() {
+      token = widget.user;
+      getUser(token);
+    });
   }
 
   @override
@@ -84,11 +98,15 @@ class _CartState extends State<Cart> {
                       width: MediaQuery.of(context).size.width,
                       child: RaisedButton(
                         onPressed: () {
+                          onlyItems();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      Order(total_price)));
+                                  builder: (BuildContext context) => Order(
+                                      total_price,
+                                      this.customer,
+                                      widget.restaurant,
+                                      products)));
                         },
                         child: const Text(
                           'Checkout',
@@ -140,7 +158,23 @@ class _CartState extends State<Cart> {
     }
     setState(() {
       total_price = total_p;
-      print(total_price);
+    });
+  }
+
+  getUser(token) async {
+    final user = this.token.getString('token');
+    final response = await GetService().getUser(user);
+    setState(() {
+      customer = response['name'];
+    });
+  }
+
+  onlyItems() {
+    setState(() {
+      for (var items in widget._cart) {
+        var pro = {'item': items['item'], 'quantity': items['quantity']};
+        products.add(pro);
+      }
     });
   }
 }

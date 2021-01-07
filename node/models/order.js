@@ -19,7 +19,11 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    date: Date.now,
+    address:{
+        type:String,
+        required: true,
+    },
+    date: {type: Date, default: Date.now},
     isDelivered: Boolean
 });
 

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const users = require('./controllers/user');
 const restaurants = require('./controllers/restaurant');
 const menu = require('./controllers/menu');
+const order = require('./controllers/order');
 const app = express();
 const port = 3000;
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/', users);
 app.use('/', restaurants);
 app.use('/', menu);
+app.use('/', order);
 
 // const courseSchema = new mongoose.Schema({
 //     name: String,

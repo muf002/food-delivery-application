@@ -6,7 +6,7 @@ import './cartPage.dart';
 
 class MenuPage extends StatefulWidget {
   var restaurant;
-  var token;
+  SharedPreferences token;
   MenuPage(rest, user) {
     restaurant = rest;
     token = user;
@@ -46,14 +46,35 @@ class _MenuPageState extends State<MenuPage> {
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => Cart(cart)));
-                },
-                child: Icon(Icons.shopping_cart),
-              )),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                Cart(cart, widget.token, this.rest)));
+                  },
+                  child: this.cart.length == 0
+                      ? Icon(Icons.shopping_cart)
+                      : GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        Cart(cart, widget.token, this.rest)));
+                          },
+                          child: new Stack(children: <Widget>[
+                            new Padding(
+                                padding: EdgeInsets.only(top: 15),
+                                child: Icon(Icons.shopping_cart)),
+                            new Positioned(
+                              // draw a red marble
+                              top: 12.0,
+                              right: 0.0,
+                              child: new Icon(Icons.brightness_1,
+                                  size: 8.0, color: Colors.redAccent),
+                            ),
+                          ])))),
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
@@ -157,7 +178,6 @@ class _MenuPageState extends State<MenuPage> {
     var choice = true;
     for (var food in this.cart) {
       if (food['item'] == item) {
-        print('Usmanpapa');
         food['quantity'] = food['quantity'] + quantity;
         choice = false;
         setState(() {
@@ -185,6 +205,7 @@ class _MenuPageState extends State<MenuPage> {
         });
       }
     }
+    setState(() {});
     print(cart);
   }
 }

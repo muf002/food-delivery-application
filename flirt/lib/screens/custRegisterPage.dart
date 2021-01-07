@@ -97,7 +97,15 @@ class _CustRegisterState extends State<CustRegister> {
                         },
                       )),
                   SizedBox(height: 20),
-                  FlatButton(onPressed: null, child: Text('Sign In')),
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    CustLogin()));
+                      },
+                      child: Text('Sign In')),
                 ],
               ),
             ),

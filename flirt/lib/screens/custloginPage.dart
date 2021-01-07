@@ -2,6 +2,7 @@ import 'package:flirt/screens/customerPanel.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/authService.dart';
+import './custRegisterPage.dart';
 import '../services/getService.dart';
 import './home.dart';
 
@@ -29,7 +30,7 @@ class _CustLoginState extends State<CustLogin> {
         ),
         body: SingleChildScrollView(
             child: Padding(
-          padding: EdgeInsets.only(top: 100),
+          padding: EdgeInsets.only(top: 70),
           child: Center(
             child: Container(
                 padding: EdgeInsets.all(20),
@@ -89,7 +90,18 @@ class _CustLoginState extends State<CustLogin> {
                           },
                         )),
                     SizedBox(height: 20),
-                    FlatButton(onPressed: null, child: Text('Forget Password')),
+                    FlatButton(
+                        onPressed: () {}, child: Text('Forget Password')),
+                    SizedBox(height: 5),
+                    FlatButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      CustRegister()));
+                        },
+                        child: Text('Register')),
                   ],
                 )),
           ),

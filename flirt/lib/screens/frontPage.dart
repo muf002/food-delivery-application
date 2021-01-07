@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:image_ink_well/image_ink_well.dart';
 import './custloginPage.dart';
 import './restLoginPage.dart';
+import './restRegisterPage.dart';
 
 void main() => runApp(MaterialApp(
       home: Home(),

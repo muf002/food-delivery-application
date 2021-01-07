@@ -51,4 +51,19 @@ router.post('/restlogin', async(req, res)=>{
     }  
 });
 
+router.get('/restaurant/:token', async(req,res)=>{
+    const token = req.params.token;
+    if(!token){
+        res.send('token not found');
+    }
+    else{
+        try{
+            const decoded = jwt.verify(token, 'jwtPrivateKey');
+            res.send(decoded);
+        }catch(ex){
+            res.send(ex.message);
+        }
+    }
+})
+
 module.exports = router;
