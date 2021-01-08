@@ -2,6 +2,7 @@ import 'package:flirt/services/getService.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './placeOrder.dart';
+import './custloginPage.dart';
 import '../services/authService.dart';
 
 class Cart extends StatefulWidget {
@@ -50,7 +51,13 @@ class _CartState extends State<Cart> {
             Padding(
                 padding: EdgeInsets.only(right: 20.0),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    widget.user.remove('tokken');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => CustLogin()));
+                  },
                   child: Icon(
                     Icons.logout,
                   ),
@@ -106,7 +113,8 @@ class _CartState extends State<Cart> {
                                       total_price,
                                       this.customer,
                                       widget.restaurant,
-                                      products)));
+                                      products,
+                                      widget.user)));
                         },
                         child: const Text(
                           'Checkout',

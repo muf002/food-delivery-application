@@ -3,6 +3,7 @@ import '../services/getService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import './cartPage.dart';
+import './custloginPage.dart';
 
 class MenuPage extends StatefulWidget {
   var restaurant;
@@ -78,7 +79,13 @@ class _MenuPageState extends State<MenuPage> {
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  widget.token.remove('tokken');
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => CustLogin()));
+                },
                 child: Icon(
                   Icons.logout,
                 ),

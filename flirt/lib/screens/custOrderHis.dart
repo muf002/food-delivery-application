@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import './editMenuPage.dart';
-import './orderHistoryPage.dart';
-import './restLoginPage.dart';
 import 'package:http/http.dart';
+import './custLoginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/getService.dart';
+import '../services/delService.dart';
 
-class RestaurantHome extends StatefulWidget {
+class CustOrderHistory extends StatefulWidget {
   SharedPreferences token;
-  RestaurantHome(user) {
+  CustOrderHistory(user) {
     token = user;
   }
   @override
-  _RestaurantHomeState createState() => _RestaurantHomeState(this.token);
+  _CustOrderHistoryState createState() => _CustOrderHistoryState(this.token);
 }
 
-class _RestaurantHomeState extends State<RestaurantHome> {
-  _RestaurantHomeState(user);
-  String rest;
+class _CustOrderHistoryState extends State<CustOrderHistory> {
+  _CustOrderHistoryState(user);
+  String person;
   void initState() {
     super.initState();
-    rest = widget.token.getString('token');
+    person = widget.token.getString('token');
     getOrder();
   }
 
@@ -30,45 +30,13 @@ class _RestaurantHomeState extends State<RestaurantHome> {
         home: Scaffold(
             appBar: AppBar(
               title: Text(
-                "Active Orders",
+                "Order History",
                 style: TextStyle(
                   color: Colors.orange[400],
                 ),
               ),
               backgroundColor: Colors.grey[850],
               actions: <Widget>[
-                Padding(
-                    padding: EdgeInsets.only(right: 20.0),
-                    child: RaisedButton(
-                      color: Colors.grey[850],
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    EditMenuPage(widget.token)));
-                      },
-                      child: Center(
-                        child: Text(
-                          'Menu',
-                          style: (TextStyle(fontSize: 20, color: Colors.white)),
-                        ),
-                      ),
-                    )),
-                Padding(
-                    padding: EdgeInsets.only(right: 20.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OrderHistoryPage(widget.token)));
-                      },
-                      child: Icon(
-                        Icons.history,
-                      ),
-                    )),
                 Padding(
                     padding: EdgeInsets.only(right: 20.0),
                     child: GestureDetector(
@@ -78,7 +46,7 @@ class _RestaurantHomeState extends State<RestaurantHome> {
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    RestLogin()));
+                                    CustLogin()));
                       },
                       child: Icon(
                         Icons.logout,
@@ -92,25 +60,51 @@ class _RestaurantHomeState extends State<RestaurantHome> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          child: Text('Active Orders',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      color: Colors.black,
+                      indent: 20,
+                      endIndent: 20,
+                    ),
                     new Expanded(
                       child: FutureBuilder(
                           future: getOrder(),
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData) {
-                              return ListView.builder(
+                              return ListView.separated(
+                                  separatorBuilder: (context, index) => Divider(
+                                        color: Colors.black,
+                                        indent: 10,
+                                        endIndent: 10,
+                                      ),
                                   itemCount: snapshot.data.length,
                                   itemBuilder: (context, index) {
                                     var item = snapshot.data[index];
-                                    // final quan = item['quantity'];
-                                    // final name = item['item'];
-                                    // final price = item['price'] * quan;
-                                    return activeOrders(
-                                        item['user']['name'],
-                                        item['product'],
-                                        item['price'],
-                                        item['address'],
-                                        item['_id']);
+                                    if (!item['isDelivered']) {
+                                      return activeOrders(
+                                          item['user']['name'],
+                                          item['product'],
+                                          item['price'],
+                                          item['address'],
+                                          item['_id'],
+                                          item['isDelivered']);
+                                    }
+                                    return Padding(padding: EdgeInsets.all(0));
                                   });
                             } else {
                               return Center(
@@ -118,14 +112,63 @@ class _RestaurantHomeState extends State<RestaurantHome> {
                               );
                             }
                           }),
-                    )
+                    ),
+                    Divider(
+                      color: Colors.black,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          child: Text('Past Orders',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                    new Expanded(
+                        child: FutureBuilder(
+                            future: getOrder(),
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                return ListView.separated(
+                                    separatorBuilder: (context, index) =>
+                                        Divider(
+                                          color: Colors.black,
+                                          indent: 10,
+                                          endIndent: 10,
+                                        ),
+                                    itemCount: snapshot.data.length,
+                                    itemBuilder: (context, index) {
+                                      var item = snapshot.data[index];
+                                      if (item['isDelivered']) {
+                                        return activeOrders(
+                                            item['user']['name'],
+                                            item['product'],
+                                            item['price'],
+                                            item['address'],
+                                            item['_id'],
+                                            item['isDelivered']);
+                                      }
+                                      return Padding(
+                                          padding: EdgeInsets.all(0));
+                                    });
+                              } else {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            }))
                   ],
                 ),
               ),
             )));
   }
 
-  activeOrders(user, product, price, address, id) {
+  activeOrders(user, product, price, address, id, isDel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
       child: GestureDetector(
@@ -163,21 +206,6 @@ class _RestaurantHomeState extends State<RestaurantHome> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 for (var item in product) items(item),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: RaisedButton(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    color: Colors.green,
-                                    child: Text(
-                                      "Mark as Complete",
-                                    ),
-                                    onPressed: () async {
-                                      await delivered(id);
-                                    },
-                                  ),
-                                )
                               ],
                             ),
                           ),
@@ -191,14 +219,16 @@ class _RestaurantHomeState extends State<RestaurantHome> {
             padding: EdgeInsets.all(2),
             child: ListTile(
               leading: Icon(
-                Icons.restaurant_menu,
+                Icons.fastfood,
                 color: Colors.blueGrey,
               ),
               title: Text(
                 '$user |  Amount: $price',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              tileColor: Colors.grey[300],
+              trailing: GestureDetector(
+                  child: Icon(Icons.done_all, color: Colors.red),
+                  onTap: () async {}),
               subtitle: Text('$address'),
               isThreeLine: true,
             ),
@@ -207,8 +237,13 @@ class _RestaurantHomeState extends State<RestaurantHome> {
   }
 
   getOrder() async {
-    final orders = await GetService().getOrderRes(this.rest);
+    final orders = await GetService().getOrderHisCust(this.person);
     return orders;
+  }
+
+  removeOrder(id) async {
+    final res = await DeleteService().orderDelete(id);
+    setState(() {});
   }
 
   items(products) {

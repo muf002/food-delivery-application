@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import './editMenuPage.dart';
-import './orderHistoryPage.dart';
-import './restLoginPage.dart';
 import 'package:http/http.dart';
+import './restLoginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/getService.dart';
+import '../services/delService.dart';
 
-class RestaurantHome extends StatefulWidget {
+class OrderHistoryPage extends StatefulWidget {
   SharedPreferences token;
-  RestaurantHome(user) {
+  OrderHistoryPage(user) {
     token = user;
   }
   @override
-  _RestaurantHomeState createState() => _RestaurantHomeState(this.token);
+  _OrderHistoryPageState createState() => _OrderHistoryPageState(this.token);
 }
 
-class _RestaurantHomeState extends State<RestaurantHome> {
-  _RestaurantHomeState(user);
+class _OrderHistoryPageState extends State<OrderHistoryPage> {
+  _OrderHistoryPageState(user);
   String rest;
   void initState() {
     super.initState();
@@ -30,45 +30,13 @@ class _RestaurantHomeState extends State<RestaurantHome> {
         home: Scaffold(
             appBar: AppBar(
               title: Text(
-                "Active Orders",
+                "Order History",
                 style: TextStyle(
                   color: Colors.orange[400],
                 ),
               ),
               backgroundColor: Colors.grey[850],
               actions: <Widget>[
-                Padding(
-                    padding: EdgeInsets.only(right: 20.0),
-                    child: RaisedButton(
-                      color: Colors.grey[850],
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    EditMenuPage(widget.token)));
-                      },
-                      child: Center(
-                        child: Text(
-                          'Menu',
-                          style: (TextStyle(fontSize: 20, color: Colors.white)),
-                        ),
-                      ),
-                    )),
-                Padding(
-                    padding: EdgeInsets.only(right: 20.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OrderHistoryPage(widget.token)));
-                      },
-                      child: Icon(
-                        Icons.history,
-                      ),
-                    )),
                 Padding(
                     padding: EdgeInsets.only(right: 20.0),
                     child: GestureDetector(
@@ -98,13 +66,15 @@ class _RestaurantHomeState extends State<RestaurantHome> {
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData) {
-                              return ListView.builder(
+                              return ListView.separated(
+                                  separatorBuilder: (context, index) => Divider(
+                                        color: Colors.black,
+                                        indent: 10,
+                                        endIndent: 10,
+                                      ),
                                   itemCount: snapshot.data.length,
                                   itemBuilder: (context, index) {
                                     var item = snapshot.data[index];
-                                    // final quan = item['quantity'];
-                                    // final name = item['item'];
-                                    // final price = item['price'] * quan;
                                     return activeOrders(
                                         item['user']['name'],
                                         item['product'],
@@ -163,21 +133,6 @@ class _RestaurantHomeState extends State<RestaurantHome> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 for (var item in product) items(item),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: RaisedButton(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    color: Colors.green,
-                                    child: Text(
-                                      "Mark as Complete",
-                                    ),
-                                    onPressed: () async {
-                                      await delivered(id);
-                                    },
-                                  ),
-                                )
                               ],
                             ),
                           ),
@@ -191,14 +146,18 @@ class _RestaurantHomeState extends State<RestaurantHome> {
             padding: EdgeInsets.all(2),
             child: ListTile(
               leading: Icon(
-                Icons.restaurant_menu,
+                Icons.done_all,
                 color: Colors.blueGrey,
               ),
               title: Text(
                 '$user |  Amount: $price',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              tileColor: Colors.grey[300],
+              trailing: GestureDetector(
+                  child: Icon(Icons.delete, color: Colors.red),
+                  onTap: () async {
+                    await removeOrder(id);
+                  }),
               subtitle: Text('$address'),
               isThreeLine: true,
             ),
@@ -207,8 +166,13 @@ class _RestaurantHomeState extends State<RestaurantHome> {
   }
 
   getOrder() async {
-    final orders = await GetService().getOrderRes(this.rest);
+    final orders = await GetService().getOrderHis(this.rest);
     return orders;
+  }
+
+  removeOrder(id) async {
+    final res = await DeleteService().orderDelete(id);
+    setState(() {});
   }
 
   items(products) {

@@ -42,6 +42,36 @@ class GetService {
     return json.decode(order.body);
   }
 
+  getOrderHis(rest) async {
+    print(rest);
+    final response = await http.get(
+      'http://192.168.10.3:3000/restaurant/$rest',
+      headers: {"Content-Type": "application/json"},
+    );
+    final restaurant = json.decode(response.body)['name'];
+    final order = await http.get(
+      'http://192.168.10.3:3000/getOrderHis/$restaurant',
+      headers: {"Content-Type": "application/json"},
+    );
+    print(json.decode(order.body));
+    return json.decode(order.body);
+  }
+
+  getOrderHisCust(user) async {
+    print(user);
+    final response = await http.get(
+      'http://192.168.10.3:3000/user/$user',
+      headers: {"Content-Type": "application/json"},
+    );
+    final person = json.decode(response.body)['name'];
+    final order = await http.get(
+      'http://192.168.10.3:3000/getOrderHisCust/$person',
+      headers: {"Content-Type": "application/json"},
+    );
+    print(json.decode(order.body));
+    return json.decode(order.body);
+  }
+
   orderDelivered(id) async {
     // final body = jsonEncode({"id": id});
     final response = await http.put(

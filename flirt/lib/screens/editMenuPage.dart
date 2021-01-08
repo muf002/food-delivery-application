@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/getService.dart';
 import '../services/delService.dart';
 import '../services/registerion.dart';
+import './restLoginPage.dart';
 
 class EditMenuPage extends StatefulWidget {
   SharedPreferences token;
@@ -50,23 +51,14 @@ class _MenuPageState extends State<EditMenuPage> {
           actions: <Widget>[
             Padding(
                 padding: EdgeInsets.only(right: 20.0),
-                child: RaisedButton(
-                  onPressed: () {},
-                  color: Colors.grey[850],
-                  child: Center(
-                    child: Text(
-                      'Order History',
-                      style: (TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      )),
-                    ),
-                  ),
-                )),
-            Padding(
-                padding: EdgeInsets.only(right: 20.0),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    widget.token.remove('tokken');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => RestLogin()));
+                  },
                   child: Icon(
                     Icons.logout,
                   ),
@@ -151,10 +143,6 @@ class _MenuPageState extends State<EditMenuPage> {
                 child: Icon(Icons.delete, color: Colors.red),
                 onTap: () async {
                   await removeMenu(id);
-                  // setState(() {
-                  //   widget._cart
-                  //       .removeWhere((element) => element['item'] == name);
-                  //   total();
                 })),
       ),
     );

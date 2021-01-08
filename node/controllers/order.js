@@ -35,9 +35,29 @@ router.get('/getOrderRes/:res', async(req, res)=>{
     res.send(order);
 })
 
+router.get('/getOrderHis/:res', async(req, res)=>{
+    const restaurant = await Restaurant.findOne({name: req.params.res});
+    const order = await Order.find({restaurant: restaurant._id, isDelivered:true}).populate('user');
+    res.send(order);
+})
+
+router.get('/getOrderHisCust/:user', async(req, res)=>{
+    const user = await User.findOne({name: req.params.user});
+    const order = await Order.find({user: user._id}).populate('user');
+    res.send(order);
+})
+
+
+
 router.put('/delivered/:id', async(req, res)=>{
     console.log(req.params);
     const order = await Order.updateOne({_id:req.params.id}, {$set:{isDelivered:true}});
+    res.send(order);
+})
+
+router.delete('/orderDel/:id', async(req, res)=>{
+    console.log(req.params.id);
+    const order = await Order.deleteOne({_id:req.params.id});
     res.send(order);
 })
 

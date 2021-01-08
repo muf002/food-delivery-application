@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/registerion.dart';
+import './custloginPage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import './finalPage.dart';
 
 class Order extends StatefulWidget {
   int price;
   var user;
   var restaurant;
   var pro;
-  Order(cost, user, rest, product) {
+  SharedPreferences token;
+  Order(cost, user, rest, product, person) {
     price = cost;
     this.user = user;
     this.restaurant = rest;
     this.pro = product;
+    token = person;
   }
   @override
   _OrderState createState() =>
-      _OrderState(this.price, this.user, this.restaurant, this.pro);
+      _OrderState(this.price, this.user, this.restaurant, this.pro, this.token);
 }
 
 class _OrderState extends State<Order> {
   final addressController = TextEditingController();
   int cost;
   int cost_del;
-  _OrderState(cost, user, rest, product);
+  _OrderState(cost, user, rest, product, token);
   @override
   void initState() {
     // TODO: implement initState
@@ -44,7 +49,13 @@ class _OrderState extends State<Order> {
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  widget.token.remove('tokken');
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => CustLogin()));
+                },
                 child: Icon(
                   Icons.logout,
                 ),
@@ -180,13 +191,10 @@ class _OrderState extends State<Order> {
         widget.restaurant, this.cost_del, addressController.text);
     print(response);
     if (response['success']) {
-      Fluttertoast.showToast(
-          msg: 'Your order has been placed',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.grey[800],
-          textColor: Colors.white);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => FinalPage(widget.token)));
     } else {
       _showMyDialog(response['msg']);
     }
