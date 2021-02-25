@@ -3,7 +3,7 @@ import 'dart:convert';
 
 class GetService {
   getRest() async {
-    final response = await http.get('http://192.168.10.3:3000/restaurants',
+    final response = await http.get('http://192.168.10.4:3000/restaurants',
         headers: {"Content-Type": "application/json"});
     return json.decode(response.body);
   }
@@ -12,7 +12,7 @@ class GetService {
     print(restaurant);
     //final uri = new Uri.http('http://192.168.10.2:3000/menu/', restaurant);
     final response = await http.get(
-      'http://192.168.10.3:3000/menu/$restaurant',
+      'http://192.168.10.4:3000/menu/$restaurant',
       headers: {"Content-Type": "application/json"},
     );
     return json.decode(response.body);
@@ -21,7 +21,7 @@ class GetService {
   getUser(token) async {
     print(token);
     final response = await http.get(
-      'http://192.168.10.3:3000/user/$token',
+      'http://192.168.10.4:3000/user/$token',
       headers: {"Content-Type": "application/json"},
     );
     return json.decode(response.body);
@@ -30,12 +30,12 @@ class GetService {
   getOrderRes(rest) async {
     print(rest);
     final response = await http.get(
-      'http://192.168.10.3:3000/restaurant/$rest',
+      'http://192.168.10.4:3000/restaurant/$rest',
       headers: {"Content-Type": "application/json"},
     );
     final restaurant = json.decode(response.body)['name'];
     final order = await http.get(
-      'http://192.168.10.3:3000/getOrderRes/$restaurant',
+      'http://192.168.10.4:3000/getOrderRes/$restaurant',
       headers: {"Content-Type": "application/json"},
     );
     print(json.decode(order.body));
@@ -45,12 +45,12 @@ class GetService {
   getOrderHis(rest) async {
     print(rest);
     final response = await http.get(
-      'http://192.168.10.3:3000/restaurant/$rest',
+      'http://192.168.10.4:3000/restaurant/$rest',
       headers: {"Content-Type": "application/json"},
     );
     final restaurant = json.decode(response.body)['name'];
     final order = await http.get(
-      'http://192.168.10.3:3000/getOrderHis/$restaurant',
+      'http://192.168.10.4:3000/getOrderHis/$restaurant',
       headers: {"Content-Type": "application/json"},
     );
     print(json.decode(order.body));
@@ -60,12 +60,12 @@ class GetService {
   getOrderHisCust(user) async {
     print(user);
     final response = await http.get(
-      'http://192.168.10.3:3000/user/$user',
+      'http://192.168.10.4:3000/user/$user',
       headers: {"Content-Type": "application/json"},
     );
     final person = json.decode(response.body)['name'];
     final order = await http.get(
-      'http://192.168.10.3:3000/getOrderHisCust/$person',
+      'http://192.168.10.4:3000/getOrderHisCust/$person',
       headers: {"Content-Type": "application/json"},
     );
     print(json.decode(order.body));
@@ -75,7 +75,7 @@ class GetService {
   orderDelivered(id) async {
     // final body = jsonEncode({"id": id});
     final response = await http.put(
-      'http://192.168.10.3:3000/delivered/$id',
+      'http://192.168.10.4:3000/delivered/$id',
       headers: {"Content-Type": "application/json"},
     );
     return json.decode(response.body);
@@ -84,12 +84,12 @@ class GetService {
   getMenuRes(rest) async {
     print(rest);
     final response = await http.get(
-      'http://192.168.10.3:3000/restaurant/$rest',
+      'http://192.168.10.4:3000/restaurant/$rest',
       headers: {"Content-Type": "application/json"},
     );
     final restaurant = json.decode(response.body)['name'];
     final order = await http.get(
-      'http://192.168.10.3:3000/getMenuRes/$restaurant',
+      'http://192.168.10.4:3000/getMenuRes/$restaurant',
       headers: {"Content-Type": "application/json"},
     );
     print(json.decode(order.body));

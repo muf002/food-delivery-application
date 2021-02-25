@@ -5,6 +5,7 @@ import './custLoginPage.dart';
 import './menuPanel.dart';
 import './custOrderHis.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import './frontPage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CustomerPanel extends StatefulWidget {
@@ -82,7 +83,7 @@ class _CustomerPanelState extends State<CustomerPanel> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => CustLogin()));
+                          builder: (BuildContext context) => Home()));
                 },
                 child: Icon(
                   Icons.logout,

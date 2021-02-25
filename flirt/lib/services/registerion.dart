@@ -7,7 +7,7 @@ class Register {
     try {
       final body =
           jsonEncode({"name": name, "email": email, "password": password});
-      var response = await http.post('http://192.168.10.3:3000/custRegister',
+      var response = await http.post('http://192.168.10.4:3000/custRegister',
           headers: {"Content-Type": "application/json"}, body: body);
       return json.decode(response.body);
     } catch (ex) {
@@ -20,7 +20,7 @@ class Register {
     try {
       final body = jsonEncode(
           {"name": name, "username": username, "password": password});
-      var response = await http.post('http://192.168.10.3:3000/restRegister',
+      var response = await http.post('http://192.168.10.4:3000/restRegister',
           headers: {"Content-Type": "application/json"}, body: body);
       return json.decode(response.body);
     } catch (ex) {
@@ -38,7 +38,7 @@ class Register {
         "address": address
       });
       print(body);
-      var response = await http.post('http://192.168.10.3:3000/placeOrder',
+      var response = await http.post('http://192.168.10.4:3000/placeOrder',
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"
@@ -52,7 +52,7 @@ class Register {
 
   menuRegister(name, price, token) async {
     final response = await http.get(
-      'http://192.168.10.3:3000/restaurant/$token',
+      'http://192.168.10.4:3000/restaurant/$token',
       headers: {"Content-Type": "application/json"},
     );
     final restaurant = json.decode(response.body)['_id'];
@@ -63,7 +63,7 @@ class Register {
         "restaurant": restaurant,
       });
       print(body);
-      var response = await http.post('http://192.168.10.3:3000/menuEnter',
+      var response = await http.post('http://192.168.10.4:3000/menuEnter',
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"
