@@ -3,7 +3,7 @@
 ## Overview
 This project is a complete solution for a food delivery service, featuring a mobile app built with Flutter and a backend service using Node.js and MongoDB. It aims to connect customers with restaurants, enabling them to browse menus, place orders, and manage deliveries.
 
-![Project Overview Image](./flirt/assets/preview.png)
+<img src="./flirt/assets/preview.png" height="500">
 
 ## Features
 - User authentication and profile management
